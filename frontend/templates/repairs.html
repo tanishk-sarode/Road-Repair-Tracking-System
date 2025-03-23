@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repair Requests </title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Road Repair Tracking System</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Repair Requests</h2>
+            <p>Residents can submit road repair requests through the platform by providing detailed information,
+                including:</p>
+            <ul>
+                <li>Location details (address or GIS coordinates)</li>
+                <li>Severity level (Low, Medium, High)</li>
+                <li>Description of the issue</li>
+                <li>Supporting images (if applicable)</li>
+            </ul>
+            <p>Each request is assigned a unique tracking ID to monitor progress.</p>
+            <form id="repair-form">
+                <input type="text" placeholder="Enter location" required>
+                <input type="text" placeholder="Describe the issue" required>
+                <button type="submit">Submit Request</button>
+            </form>
+        </section>
+        <!-- <section>
+            <h2>Repair List</h2>
+            <ul>
+                <li>Repair 1</li>
+                <li>Repair 2</li>
+                <li>Repair 3</li>
+            </ul>
+        </section> -->
+    </main>
+    <footer>
+        <p>&copy; 2023 Road Repair Tracking System</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll("nav ul li a").forEach(anchor => {
+                anchor.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("href").substring(1);
+                    document.getElementById(targetId).scrollIntoView({ behavior: "smooth" });
+                });
+            });
+
+            // Repair request submission (Mockup example)
+            const repairForm = document.getElementById("repair-form");
+            if (repairForm) {
+                repairForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    alert("Repair request submitted successfully!");
+                });
+            }
+
+            // Dynamic content loading (Example for reports section)
+            const reportsBtn = document.getElementById("load-reports");
+            if (reportsBtn) {
+                reportsBtn.addEventListener("click", function () {
+                    const reportsSection = document.getElementById("tracking");
+                    reportsSection.innerHTML += "<p>New Report Loaded: Road X repaired successfully.</p>";
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

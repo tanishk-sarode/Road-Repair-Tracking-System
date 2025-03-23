@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Road Repair Tracking System</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Reports</h2>
+            <p>View and generate reports on road repairs.</p>
+            <!-- Add more content specific to Reports here -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Road Repair Tracking System</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll("nav ul li a").forEach(anchor => {
+                anchor.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("href").substring(1);
+                    document.getElementById(targetId).scrollIntoView({ behavior: "smooth" });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

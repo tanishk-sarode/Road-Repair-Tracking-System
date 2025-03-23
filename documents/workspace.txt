@@ -1,0 +1,25 @@
+RRTS/
+│
+├── backend/                     # Flask Backend
+│   ├── app/
+│   │   ├── __init__.py          # Initializes Flask app
+│   │   ├── models.py            # database file 
+│   │   ├── routes.py            # API endpoints (residents, supervisors, admins)
+│   │   ├── auth.py              # Authentication (Flask-Login/JWT)
+│   │   ├── config.py            # App configurations
+│   │   ├── services.py          # Business logic (handling repairs, scheduling)
+│   ├── main.py                  # Entry point for running Flask
+│   ├── requirements.txt         # Backend dependencies
+│
+├── frontend/                    # Frontend (HTML, CSS, JS)
+│   ├── static/                  # CSS, JS, images
+│   ├── templates/               # HTML templates (Jinja2 or separate frontend)
+│   ├── index.html               # Main page
+│
+├── database/                    # Database & Migrations
+│   ├── schema.sql               # SQL schema (if using raw SQL)
+│   ├── seed.py                  # Initial database seeding script
+│
+├── .env                         # Environment variables (DB credentials, API keys)
+├── .gitignore                   # Ignore unnecessary files
+├── README.md                    # Project documentation
