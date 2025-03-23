@@ -5,16 +5,32 @@ This project is designed to set up a Flask application with a database backend. 
 ## Project Structure
 
 ```
-database-setup-project
-├── src
-│   ├── app.py               # Entry point of the application
-│   ├── models               # Directory for database models
-│   │   └── __init__.py      # Database model definitions
-│   ├── routes               # Directory for application routes
-│   │   └── __init__.py      # Route definitions for handling requests
-│   └── config.py            # Configuration settings for the Flask app
-├── requirements.txt         # List of dependencies for the project
-└── README.md                # Documentation for the project
+Road-Repair-Tracking-System/
+│
+├── backend/                     # Flask Backend
+│   ├── app/
+│   │   ├── __init__.py          # Initializes Flask app
+│   │   ├── models.py            # database file 
+│   │   ├── routes.py            # API endpoints (residents, supervisors, admins)
+│   │   ├── auth.py              # Authentication (Flask-Login/JWT)
+│   │   ├── config.py            # App configurations
+│   │   ├── services.py          # Business logic (handling repairs, scheduling)
+│   ├── main.py                  # Entry point for running Flask
+│   ├── requirements.txt         # Backend dependencies
+│
+├── frontend/                    # Frontend (HTML, CSS, JS)
+│   ├── static/                  # CSS, JS, images
+│   ├── templates/               # HTML templates (Jinja2 or separate frontend)
+│   ├── index.html               # Main page
+│
+├── database/                    # Database & Migrations
+│   ├── schema.sql               # SQL schema (if using raw SQL)
+│   ├── seed.py                  # Initial database seeding script
+│
+├── .env                         # Environment variables (DB credentials, API keys)
+├── .gitignore                   # Ignore unnecessary files
+├── README.md                    # Project documentation
+
 ```
 
 ## Getting Started
@@ -28,16 +44,16 @@ database-setup-project
 2. **Install dependencies:**
    Make sure you have Python and pip installed. Then run:
    ```
-   pip install -r requirements.txt
+   pip install -r ./backend/requirements.txt
    ```
 
 3. **Set up the database:**
-   Configure your database settings in `src/config.py`. Ensure that the database server is running.
+   Configure your database settings in `backend/app/config.py`. Ensure that the database server is running.
 
 4. **Run the application:**
    Start the Flask application by executing:
    ```
-   python src/app.py
+   python backend/main.py
    ```
 
 5. **Access the application:**
