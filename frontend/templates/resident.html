@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Dashboard</title>
+    <link rel="stylesheet" href="../static/css/resident.css">
+    <script src="../static/js/resident.js" defer></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Resident</h2>
+        <ul>
+            <li><a href="#">My Complaints</a></li>
+            <li><a href="{{url_for('auth.logout')}}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Welcome, Resident!</h1>
+        <div class="complaints-section">
+            <h2>Your Complaints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Date Reported</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintsTable">
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.id }}</td>
+                        <td>{{ complaint.description }}</td>
+                        <td>{{ complaint.status }}</td>
+                        <td>{{ complaint.date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

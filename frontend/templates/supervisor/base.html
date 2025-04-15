@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Supervisor Dashboard{% endblock %}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/supervisor.css') }}">
+  <!-- FullCalendar CSS -->
+  <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
+  
+  <!-- bootstrap-css-icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+  {% block extra_head %}{% endblock %}
+  <style>
+    .main-content {
+      margin-left: 4.5rem;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+ <div class="d-flex flex-column flex-shrink-0 bg-light position-fixed" style="width: 4.5rem; height: 100vh;">
+    <a href="/" class="d-block p-3 link-dark text-decoration-none" title="Home" data-bs-toggle="tooltip" data-bs-placement="right">
+      <i class="bi bi-bootstrap-fill fs-2"></i>
+      <span class="visually-hidden">Icon-only</span>
+    </a>
+    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+      <li class="nav-item">
+        <a href="{{ url_for('supervisor.home_page') }}" class="nav-link active py-3 border-bottom" aria-current="page" title="Manage Complaints" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="bi bi-house-door-fill fs-5"></i>
+        </a>
+      </li>
+      <li>
+        <a href="{{url_for('supervisor.available_resources')}}" class="nav-link py-3 border-bottom" title="Repair Schedules" data-bs-toggle="tooltip" data-bs-placement="right">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack4-fill" viewBox="0 0 16 16">
+            <path d="M8 0a2 2 0 0 0-2 2H3.5a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h4v.5a.5.5 0 0 0 1 0V7h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H10a2 2 0 0 0-2-2m1 2a1 1 0 0 0-2 0zm-4 9v2h6v-2h-1v.5a.5.5 0 0 1-1 0V11z"/>
+            <path d="M14 7.599A3 3 0 0 1 12.5 8H9.415a1.5 1.5 0 0 1-2.83 0H3.5A3 3 0 0 1 2 7.599V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="{{url_for('supervisor.view_repair')}}" class="nav-link py-3 border-bottom" title="All Repair" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="bi bi-tools fs-5"></i>
+        </a>
+      </li>
+      <li>
+        <a href="{{url_for('supervisor.view_calendar')}}" class="nav-link py-3 border-bottom" title="Repair Schedules" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="bi bi-calendar-week-fill"></i>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('auth.logout') }}" class="nav-link py-3 border-bottom" title="Logout" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="bi bi-box-arrow-right fs-5"></i>
+        </a>
+      </li>
+    </ul>
+    <div class="dropdown border-top">
+      <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://ui-avatars.com/api/?name=User&background=random&size=24" alt="user" width="24" height="24" class="rounded-circle">
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- Main Content -->
+  <div class="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container mt-3">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Automatically dismiss flash messages after 5 seconds
+    setTimeout(function () {
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        var bootstrapAlert = new bootstrap.Alert(alert);
+        bootstrapAlert.close();
+      });
+    }, 5000);
+  </script>
+
+   <!-- FullCalendar JS -->
+   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+
+   <!-- Bootstrap Bundle (includes Popper) -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script> 
+   <!-- jQuery -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

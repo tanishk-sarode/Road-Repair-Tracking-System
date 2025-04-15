@@ -23,10 +23,11 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(String(100), nullable=False)
     role: Mapped[str] = mapped_column(String(20), nullable=False)
 
+    # Relationships
     complaints_clerk = db.relationship('Complaint', foreign_keys='Complaint.clerk_id', backref='clerk', lazy=True)
     complaints_resident = db.relationship('Complaint', foreign_keys='Complaint.residence_id', backref='resident', lazy=True)
     repairs = db.relationship('Repair', backref='supervisor', lazy=True)
-    branches = db.relationship('BranchOffice', backref='supervisor', lazy=True)
+    branches = db.relationship('BranchOffice', foreign_keys='BranchOffice.supervisor_id', backref='supervisor', lazy=True)
 
 class Complaint(db.Model):
     __tablename__ = 'complaint'
@@ -37,8 +38,9 @@ class Complaint(db.Model):
     location: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=False)
     severity: Mapped[str] = mapped_column(String(50), nullable=False)
-    status: Mapped[str] = mapped_column(String(50), nullable=False, default='unaccepted') #unaccepted, accepted, in_progress, completed
+    status: Mapped[str] = mapped_column(String(50), nullable=False)
     date_reported: Mapped[DateTime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+
     repair = db.relationship('Repair', backref='complaint', lazy=True, uselist=False)
 
 class Repair(db.Model):
@@ -47,37 +49,21 @@ class Repair(db.Model):
     priority: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     complaint_id: Mapped[int] = mapped_column(Integer, ForeignKey('complaint.id'), nullable=False)
     supervisor_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'), nullable=True)
-    status: Mapped[str] = mapped_column(String(50), nullable=False, default="Unscheduled") #Scheduled, Unscheduled, in_progress, completed
-    days_to_complete: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="Scheduled")
     start_date: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
     completion_date: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
     expected_completion_date: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
 
-class RepairMachineAllocation(db.Model):
-    __tablename__ = 'repair_machine_allocation'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    repair_id: Mapped[int] = mapped_column(Integer, ForeignKey('repair.id'), nullable=False)
-    machine_id: Mapped[int] = mapped_column(Integer, ForeignKey('resource_machine.id'), nullable=False)
-    quantity_allocated: Mapped[int] = mapped_column(Integer, nullable=False)
-    quantity_requested: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-
-class RepairManpowerAllocation(db.Model):
-    __tablename__ = 'repair_manpower_allocation'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    repair_id: Mapped[int] = mapped_column(Integer, ForeignKey('repair.id'), nullable=False)
-    manpower_id: Mapped[int] = mapped_column(Integer, ForeignKey('resource_manpower.id'), nullable=False)
-    quantity_allocated: Mapped[int] = mapped_column(Integer, nullable=False)
-    quantity_requested: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    manpower_allocations = db.relationship('ResourceManpower', backref='repair', lazy=True)
+    machine_allocations = db.relationship('ResourceMachine', backref='repair', lazy=True)
 
 class ResourceManpower(db.Model):
     __tablename__ = 'resource_manpower'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     role: Mapped[str] = mapped_column(String(100), nullable=False)
     total_available: Mapped[int] = mapped_column(Integer, nullable=False)
-    in_use: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     currently_allocated: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    currently_requested: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    status: Mapped[str] = mapped_column(String(50), nullable=False, default="Available")
+    repair_id: Mapped[int] = mapped_column(Integer, ForeignKey('repair.id'), nullable=True)
 
 class ResourceMachine(db.Model):
     __tablename__ = 'resource_machine'
@@ -85,9 +71,8 @@ class ResourceMachine(db.Model):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     total_available: Mapped[int] = mapped_column(Integer, nullable=False)
     currently_allocated: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    in_use: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    currently_requested: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     status: Mapped[str] = mapped_column(String(50), nullable=False, default="Available")
+    repair_id: Mapped[int] = mapped_column(Integer, ForeignKey('repair.id'), nullable=True)
 
 class RepairSchedule(db.Model):
     __tablename__ = 'repair_schedule'

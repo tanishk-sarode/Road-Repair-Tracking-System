@@ -1,0 +1,107 @@
+{% extends "supervisor/base.html" %}
+{% block content %}
+
+<div id="repair-container" class="container mt-4" style="display: none;">
+  <h2 class="text-center">Repair Details</h2>
+  <div id="repair-details" class="p-3 border rounded bg-light">
+    <p id="repair-id"><strong>Repair ID:</strong> </p>
+    <p id="repair-title"><strong>Status:</strong> </p>
+    <p id="repair-location"><strong>Location:</strong> </p>
+    <p id="repair-description"><strong>Description:</strong> </p>
+    <p id="repair_start"><strong>Start Date:</strong> </p>
+    <p id="repair_end"><strong>End Date:</strong> </p>
+
+    <!-- Button to toggle collapse -->
+    <p class="d-inline-flex gap-1">
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Shift Repair
+      </button>
+    </p>
+
+    <!-- Collapsible Form -->
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body">
+        <form method="POST" id="repair-form">
+          {{ repair_form.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ repair_form.start_date.label(class="form-label") }}
+            {{ repair_form.start_date(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ repair_form.expected_completion_date.label(class="form-label") }}
+            {{ repair_form.expected_completion_date(class="form-control") }}
+          </div>
+
+          <div class="mb-3 btn-primary">
+            {{ repair_form.submit.label(class="form-label") }}
+            {{ repair_form.submit(class="form-control") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container mt-4">
+  <h2 class="text-center">Repair Calendar</h2>
+  <div id='calendar'></div>
+</div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('repair-form');
+    const repairIdField = document.getElementById('form-repair-id');
+
+    form.addEventListener('submit', function (e) {
+      if (!repairIdField.value) {
+        e.preventDefault();
+        alert("Repair ID is missing. Cannot submit form.");
+      }
+    });
+
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      height: "auto",
+      events: '/repair_events',
+      eventClick: function (info) {
+        const eventId = info.event.id;
+        const repairId = eventId.split('-')[1];
+        document.querySelector('input[name="repair_id"]').value = repairId;
+
+
+        // Show loading state
+        document.getElementById('repair-id').innerHTML = '<strong>Loading...</strong>';
+        document.getElementById('repair-title').innerHTML = '<strong>Loading...</strong>';
+        document.getElementById('repair-description').innerHTML = '<strong>Loading...</strong>';
+
+        fetch('/repair_details/' + repairId)
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById('repair-id').innerHTML = '<strong>Repair ID: </strong>' + repairId;
+            document.getElementById('repair-title').innerHTML = '<strong>Status: </strong>' + (data.status ?? 'Unknown');
+            document.getElementById('repair-description').innerHTML = '<strong>Description: </strong>' + data.description;
+            document.getElementById('repair-location').innerHTML = '<strong>Location: </strong>' + (data.location);
+            document.getElementById('repair_start').innerHTML = '<strong>Start Date: </strong>' + (data.start_date);
+            document.getElementById('repair_end').innerHTML = '<strong>End Date: </strong>' + (data.end_date);
+            document.getElementById('repair-container').style.display = 'block';
+
+            // ✅ Set the hidden input field value before form submit
+            document.getElementById('form-repair-id').value = repairId;
+          })
+          .catch(error => console.error('Error fetching repair details:', error));
+      }
+    });
+
+    calendar.render();
+  });
+</script>
+
+
+
+{% endblock %}

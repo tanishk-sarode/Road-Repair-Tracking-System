@@ -1,0 +1,47 @@
+{% extends "clerk/base.html" %}
+
+{% block title %}Clerk Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user }}!</h1>
+
+<div class="complaints-section mt-4">
+  <h2>All Complaints</h2>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>sr.</th>
+          <th>ID</th>
+          <th>Branch ID</th>
+          <th>Description</th>
+          <th>Location</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Date Reported</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="complaintsTable">
+        {% for complaint in complaints %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ complaint.id }}</td>
+          <td>{{ complaint.branch_office_id or "N/A" }}</td>
+          <td>{{ complaint.description }}</td>
+          <td>{{ complaint.location }}</td>
+          <td>{{ complaint.severity }}</td>
+          <td>{{ complaint.status }}</td>
+          <td>{{ complaint.date}}</td>
+          <td>
+            <a href="{{ url_for('clerk.edit_complaint', id=complaint.id) }}">
+              <button class="btn btn-sm btn-outline-primary">✏️</button>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

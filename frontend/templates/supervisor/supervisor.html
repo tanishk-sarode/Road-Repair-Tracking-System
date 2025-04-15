@@ -1,0 +1,101 @@
+{% extends "supervisor/base.html" %}
+
+{% block title %}Supervisor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5" id="supervisor-dashboard">
+    <div class="container mt-4">
+      <h2 class="text-center mb-4">Supervisor Dashboard</h2>
+      <p class="text-center">Welcome, Supervisor <strong>{{ user }}</strong>!</p>
+  </div>
+
+
+  <!-- Assigned Complaints Section -->
+  <div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-warning text-dark text-center">
+      <h5 class="mb-0">New Assigned Complaints</h5>
+    </div>
+    <div class="card-body p-3">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Branch ID</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Severity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for complaint in unaccepted_complaints %}
+            <tr>
+              <td>{{ complaint.id }}</td>
+              <td>{{ complaint.branch_office_id or "N/A" }}</td>
+              <td>{{ complaint.description }}</td>
+              <td>{{ complaint.location }}</td>
+              <td>{{ complaint.severity }}</td>
+              <td>
+                <a href="{{ url_for('supervisor.assign_repair', complaint_id=complaint.id) }}" class="btn btn-sm btn-outline-primary">
+                  Allocate
+                </a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-muted">No assigned complaints found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-warning text-dark text-center">
+      <h5 class="mb-0">Accepted Complaints</h5>
+    </div>
+    <div class="card-body p-3">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Branch ID</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Severity</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for complaint in accepted_complaints %}
+            <tr>
+              <td>{{ complaint.id }}</td>
+              <td>{{ complaint.branch_office_id or "N/A" }}</td>
+              <td>{{ complaint.description }}</td>
+              <td>{{ complaint.location }}</td>
+              <td>{{ complaint.severity }}</td>
+              <td>{{complaint.status}}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-muted">No assigned complaints found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Repair Schedule Section -->
+  <div class="card shadow-sm border-0 mt-4">
+    <div class="card-body text-center">
+      <a href="{{ url_for('main.schedule_repairs') }}" class="btn btn-success">
+        Schedule The Repairs
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

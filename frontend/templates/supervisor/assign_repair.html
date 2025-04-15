@@ -1,0 +1,113 @@
+{% extends "supervisor/base.html" %}
+
+{% block title %}Assign Repair for Complaint #{{ complaint.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5" id="supervisor-dashboard">
+
+    <form method="POST" action="{{ url_for('supervisor.assign_repair', complaint_id=complaint.id) }}">
+        {{ form.hidden_tag() }}
+
+        <!-- Complaint Details Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h3>Complaint Details</h3>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Complaint ID:</strong> {{ complaint.id }}</li>
+                    <li class="list-group-item"><strong>Location:</strong> {{ complaint.location }}</li>
+                    <li class="list-group-item"><strong>Description:</strong> {{ complaint.description }}</li>
+                    <li class="list-group-item"><strong>Severity:</strong> {{ complaint.severity }}</li>
+                    <li class="list-group-item"><strong>Status:</strong> {{ complaint.status }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Machine and Manpower Allocation Section (side by side) -->
+        <div class="row">
+            <!-- Machine Allocation -->
+            <div class="col-md-6">
+                <h4>Machine Allocation</h4>
+                <table class="table table-light table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Machine Name</th>
+                            <th>Availability</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for machine in machines %}
+                        <tr>
+                            <td>
+                              <input type="hidden" name="machine_ids[]" value="{{ machine.id }}">
+                              {{ machine.name }}
+                            </td>
+                            <td>{{ machine.total_available }}</td>
+                            <td><input type="number" name="machine_quantities[]" class="form-control" min="0" value="0"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Manpower Allocation -->
+            <div class="col-md-6">
+                <h4>Manpower Allocation</h4>
+                <table class="table table-light table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Availability</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for person in manpower %}
+                        <tr>
+                          <td>
+                            <input type="hidden" name="manpower_ids[]" value="{{ person.id }}">
+                              {{ person.role }}
+                          </td>
+                            <td>{{ person.total_available }}</td>
+                            <td><input type="number" name="manpower_quantities[]" class="form-control" min="0" value="0"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Priority and Days to Complete Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                {{ form.days_to_complete.label(class="form-label") }}
+                {{ form.days_to_complete(class="form-control") }}
+                {% if form.days_to_complete.errors %}
+                <div class="text-danger">
+                    {% for error in form.days_to_complete.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                {{ form.priority.label(class="form-label") }}
+                {{ form.priority(class="form-control") }}
+                {% if form.priority.errors %}
+                <div class="text-danger">
+                    {% for error in form.priority.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-center mt-4">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+
+</div>
+{% endblock %}

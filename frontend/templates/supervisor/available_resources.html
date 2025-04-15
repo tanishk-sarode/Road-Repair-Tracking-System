@@ -1,0 +1,92 @@
+{% extends "supervisor/base.html" %}
+
+{% block title %}Available Resources{% endblock %}
+
+{% block content %}
+<div class="container mt-5" id="supervisor-dashboard">
+    <div class="text-center my-5">
+        <h1 class="fw-bold mb-2">Resource Overview</h1>
+        <p class="text-muted fs-5">Welcome, Supervisor <strong>{{ user }}</strong></p>
+  </div>
+
+    <div class="row mt-4 g-4">
+        <!-- Machines Card -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0">Available Machines</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Total Availablity</th>
+                                    <th>In Use</th>
+                                    <th>Future Scheduled</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for machine in machines %}
+                                <tr>
+                                    <td>{{ machine.id }}</td>
+                                    <td>{{ machine.name }}</td>
+                                    <td>{{ machine.total_available}}</td>
+                                    <td>{{machine.in_use}}</td>
+                                    <td>{{ machine.currently_allocated }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-muted">No machines found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manpower Card -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-success text-white text-center">
+                    <h5 class="mb-0">Available Manpower</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Role</th>
+                                    <th>Total Availablity</th>
+                                    <th>In Use</th>
+                                    <th>Future Scheduled</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for person in manpower %}
+                                <tr>
+                                    <td>{{ person.id }}</td>
+                                    <td>{{ person.role }}</td>
+                                    <td>{{ person.total_available}}</td>
+                                    <td>{{person.in_use}}</td>
+                                    <td>{{ person.currently_allocated }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-muted">No manpower data available.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
