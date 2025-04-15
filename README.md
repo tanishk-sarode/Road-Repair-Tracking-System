@@ -92,7 +92,6 @@ Road-Repair-Tracking-System/
 
 2. **Set up the backend:**
    ```bash
-   cd backend
    pip install -r requirements.txt
    ```
 

@@ -3,4 +3,6 @@ Flask-SQLAlchemy
 Flask-Migrate
 python-dotenv
 flask_cors
+flask_wtf
 gunicorn
+requests
