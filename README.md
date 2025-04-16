@@ -101,6 +101,10 @@ Road-Repair-Tracking-System/
      ```bash
      python -m backend.app.models
      ```
+   - Populate Database with Dummy Values
+      ```bash
+      python populate_db.py
+      ```
 
 4. **Run the application:**
    ```bash
