@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <!-- Machine and Manpower Allocation Section (side by side) -->
+        <!-- Machine and Manpower Allocation Section -->
         <div class="row">
             <!-- Machine Allocation -->
             <div class="col-md-6">
@@ -37,13 +37,17 @@
                     </thead>
                     <tbody>
                         {% for machine in machines %}
+                        {% set existing_alloc = machine_alloc_map.get(machine.id) %}
                         <tr>
                             <td>
-                              <input type="hidden" name="machine_ids[]" value="{{ machine.id }}">
-                              {{ machine.name }}
+                                <input type="hidden" name="machine_ids[]" value="{{ machine.id }}">
+                                {{ machine.name }}
                             </td>
                             <td>{{ machine.total_available }}</td>
-                            <td><input type="number" name="machine_quantities[]" class="form-control" min="0" value="0"></td>
+                            <td>
+                                <input type="number" name="machine_quantities[]" class="form-control" min="0"
+                                    value="{{ existing_alloc.quantity_requested + existing_alloc.quantity_allocated if existing_alloc else 0 }}">
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -63,13 +67,53 @@
                     </thead>
                     <tbody>
                         {% for person in manpower %}
+                        {% set existing_alloc = manpower_alloc_map.get(person.id) %}
                         <tr>
-                          <td>
-                            <input type="hidden" name="manpower_ids[]" value="{{ person.id }}">
-                              {{ person.role }}
-                          </td>
+                            <td>
+                                <input type="hidden" name="manpower_ids[]" value="{{ person.id }}">
+                                {{ person.role }}
+                            </td>
                             <td>{{ person.total_available }}</td>
-                            <td><input type="number" name="manpower_quantities[]" class="form-control" min="0" value="0"></td>
+                            <td>
+                                <input type="number" name="manpower_quantities[]" class="form-control" min="0"
+                                    value="{{ existing_alloc.quantity_requested + existing_alloc.quantity_allocated if existing_alloc else 0 }}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Material Allocation Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h4>Material Allocation</h4>
+                <table class="table table-light table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Material Name</th>
+                            <th>Availability</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in materials %}
+                        {% set existing_alloc = material_alloc_map.get(material.id) %}
+                        <tr>
+                            <td>
+                                <input type="hidden" name="material_ids[]" value="{{ material.id }}">
+                                {{ material.name }}
+                            </td>
+                            <td>{{ material.total_available }}</td>
+                            <td>
+                                <input type="number" name="material_quantities[]" class="form-control" min="0"
+                                    value="{{ existing_alloc.quantity_requested + existing_alloc.quantity_allocated if existing_alloc else 0 }}">
+                            </td>
+                            <td>
+                                {{material.unit}}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

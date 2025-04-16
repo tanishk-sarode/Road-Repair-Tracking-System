@@ -61,6 +61,14 @@ class RepairMachineAllocation(db.Model):
     quantity_allocated: Mapped[int] = mapped_column(Integer, nullable=False)
     quantity_requested: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
+class RepairMaterialAllocation(db.Model):
+    __tablename__ = 'repair_material_allocation'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    repair_id: Mapped[int] = mapped_column(Integer, ForeignKey('repair.id'), nullable=False)
+    material_id: Mapped[int] = mapped_column(Integer, ForeignKey('resource_material.id'), nullable=False)
+    quantity_allocated: Mapped[int] = mapped_column(Float, nullable=False)
+    quantity_requested: Mapped[int] = mapped_column(Float, nullable=False, default=0.0)
+
 class RepairManpowerAllocation(db.Model):
     __tablename__ = 'repair_manpower_allocation'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -68,6 +76,17 @@ class RepairManpowerAllocation(db.Model):
     manpower_id: Mapped[int] = mapped_column(Integer, ForeignKey('resource_manpower.id'), nullable=False)
     quantity_allocated: Mapped[int] = mapped_column(Integer, nullable=False)
     quantity_requested: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+class ResourceMaterial(db.Model):
+    __tablename__ = 'resource_material'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    total_available: Mapped[int] = mapped_column(Float, nullable=False)  # float for kg, liters etc.
+    currently_allocated: Mapped[int] = mapped_column(Float, nullable=False, default=0.0)
+    currently_requested: Mapped[int] = mapped_column(Float, nullable=False, default=0.0)
+    in_use: Mapped[int] = mapped_column(Float, nullable=False, default=0.0)
+    unit: Mapped[str] = mapped_column(String(50), nullable=False)  # like kg, liters, tons
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="Available")
 
 class ResourceManpower(db.Model):
     __tablename__ = 'resource_manpower'

@@ -36,6 +36,9 @@ class RepairForm(FlaskForm):
     manpower_ids = FieldList(IntegerField('Manpower ID'), min_entries=0)
     manpower_quantities = FieldList(IntegerField('Quantity'), min_entries=0)
 
+    material_ids = FieldList(IntegerField('Material ID'), min_entries=0)  # 🆕
+    material_quantities = FieldList(IntegerField('Quantity'), min_entries=0)  # 🆕
+
     priority = SelectField(
         'Priority',
         coerce=int,
@@ -44,19 +47,22 @@ class RepairForm(FlaskForm):
     )
     complaint_id = HiddenField('Complaint ID')
     days_to_complete = IntegerField('Days to Complete', default=1, validators=[DataRequired(), NumberRange(min=1)])
-
     submit = SubmitField('Assign Repair')
 
 
-    def populate_choices(self, machines, manpower):
+
+    def populate_choices(self, machines, manpower, material):
         # Set main dropdowns
         self.machines.choices = [(m.id, m.name) for m in machines]
         self.manpower.choices = [(mp.id, mp.role) for mp in manpower]
+        self.material.choices = [(m.id, m.name) for m in material]
 
         # Set nested form dropdowns (for dynamic machine and manpower allocations)
         machine_choices = [(m.id, m.name) for m in machines]
         manpower_choices = [(mp.id, mp.role) for mp in manpower]
-
+        material_choices = [(m.id, m.name) for m in material]
+        for subform in self.material_allocations:
+            subform.material_id.choices = material_choices
         for subform in self.machine_allocations:
             subform.machine_id.choices = machine_choices
 
@@ -80,6 +86,15 @@ class ResourceMachineForm(FlaskForm):
     repair_id = IntegerField('Allocated to Repair ID', default=None)
     submit = SubmitField('Add Machine')
 
+class ResourceMaterialForm(FlaskForm):
+    name = StringField('Material Name', validators=[DataRequired()])
+    unit = StringField('Unit (e.g., kg, liters)', validators=[DataRequired()])
+    total_available = IntegerField('Total Available', validators=[DataRequired()])
+    currently_allocated = IntegerField('Currently Allocated', default=0)
+    status = SelectField('Status', choices=[('Available', 'Available'), ('In Use', 'In Use')], default='Available')
+    submit = SubmitField('Add Material')
+
+
 # Repair Schedule Form
 class RepairScheduleForm(FlaskForm):
     repair_id = IntegerField('Repair ID', validators=[DataRequired()])
@@ -102,8 +117,16 @@ class BranchOfficeForm(FlaskForm):
     location = StringField('Location', validators=[DataRequired(), Length(max=255)])
     submit = SubmitField('Add Branch Office')
 
-class UpdateRepairCalender(FlaskForm):
+class UpdateRepairCalenderDate(FlaskForm):
     repair_id = HiddenField('Repair ID', validators=[DataRequired()])
     start_date = DateField('New Start Date', validators=[DataRequired()])
     expected_completion_date = DateField('New End Date', validators=[DataRequired()])
     submit = SubmitField('Update')
+
+class UpdateResourceForm(FlaskForm):
+    resource_id = HiddenField('Resource ID', validators=[DataRequired()])
+    resource_type = SelectField('Resource Type', choices=[('Material', 'Material'), ('Machinery', 'Machinery'), ('Labor', 'Labor')], validators=[DataRequired()])
+    resource_name = StringField('Resource Name', validators=[DataRequired(), Length(max=100)])
+    total_available = IntegerField('Total Available', validators=[DataRequired()])
+    currently_allocated = IntegerField('Currently Allocated', default=0)
+    submit = SubmitField('Update Resource')

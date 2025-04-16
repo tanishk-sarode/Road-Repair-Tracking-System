@@ -39,12 +39,22 @@
               <td>{{ repair.completion_date or "Not Completed" }}</td>
               <td>{{ repair.expected_completion_date or "N/A" }}</td>
               <td>
-                <a href="{{ url_for('supervisor.assign_repair', complaint_id=repair.complaint_id) }}" class="btn btn-sm btn-outline-primary">
-                  Allocate
-                </a>
-                <a href="{{ url_for('supervisor.mark_complete', repair_id=repair.id) }}" class="btn btn-sm btn-outline-danger">
-                  Delete
-                </a>
+                {%if repair.status != 'Completed'%}
+                  <a href="{{ url_for('supervisor.assign_repair', complaint_id=repair.complaint_id) }}" class="btn btn-sm btn-outline-primary">
+                    <small>Update Allocation</small>
+                  </a>
+                  {%if repair.status == 'In Progress'%}
+                    <a href="{{ url_for('supervisor.mark_complete', repair_id=repair.id) }}"
+                      class="btn btn-sm btn-outline-danger"
+                      onclick="return confirm('Are you sure you want to mark this repair as completed? This action cannot be undone.');">
+                      <small>Mark Completed</small>
+                    </a>
+                  {% endif %}
+                {% else %}
+                  <span class="text-success">Completed</span>
+                {% endif %}
+                
+
               </td>
             </tr>
             {% else %}

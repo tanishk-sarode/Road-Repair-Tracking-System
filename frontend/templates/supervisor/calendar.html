@@ -1,6 +1,7 @@
 {% extends "supervisor/base.html" %}
 {% block content %}
 
+<!-- Repair Details Section -->
 <div id="repair-container" class="container mt-4" style="display: none;">
   <h2 class="text-center">Repair Details</h2>
   <div id="repair-details" class="p-3 border rounded bg-light">
@@ -18,7 +19,7 @@
       </button>
     </p>
 
-    <!-- Collapsible Form -->
+    <!-- Collapsible Form for Repair Shifting -->
     <div class="collapse" id="collapseExample">
       <div class="card card-body">
         <form method="POST" id="repair-form">
@@ -44,13 +45,11 @@
   </div>
 </div>
 
-
+<!-- Repair Calendar Section -->
 <div class="container mt-4">
   <h2 class="text-center">Repair Calendar</h2>
   <div id='calendar'></div>
 </div>
-
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -68,12 +67,11 @@
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       height: "auto",
-      events: '/repair_events',
+      events: '/repair_events', // Endpoint for fetching repair events
       eventClick: function (info) {
         const eventId = info.event.id;
         const repairId = eventId.split('-')[1];
         document.querySelector('input[name="repair_id"]').value = repairId;
-
 
         // Show loading state
         document.getElementById('repair-id').innerHTML = '<strong>Loading...</strong>';
@@ -83,25 +81,33 @@
         fetch('/repair_details/' + repairId)
           .then(response => response.json())
           .then(data => {
+            // Populate repair details dynamically
             document.getElementById('repair-id').innerHTML = '<strong>Repair ID: </strong>' + repairId;
             document.getElementById('repair-title').innerHTML = '<strong>Status: </strong>' + (data.status ?? 'Unknown');
             document.getElementById('repair-description').innerHTML = '<strong>Description: </strong>' + data.description;
             document.getElementById('repair-location').innerHTML = '<strong>Location: </strong>' + (data.location);
             document.getElementById('repair_start').innerHTML = '<strong>Start Date: </strong>' + (data.start_date);
             document.getElementById('repair_end').innerHTML = '<strong>End Date: </strong>' + (data.end_date);
+            
+            // Populate the form with existing repair data
+            const repair_form = document.getElementById('repair-form');
+            repair_form.start_date.value = data.start_date;
+            repair_form.expected_completion_date.value = data.end_date;
+            repair_form.repair_id.value = repairId;
+
+            // Show repair details container
             document.getElementById('repair-container').style.display = 'block';
 
-            // ✅ Set the hidden input field value before form submit
+            // Set the hidden input value for submission
             document.getElementById('form-repair-id').value = repairId;
           })
           .catch(error => console.error('Error fetching repair details:', error));
       }
     });
 
+    // Initialize the calendar view
     calendar.render();
   });
 </script>
-
-
 
 {% endblock %}

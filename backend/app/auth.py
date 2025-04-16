@@ -43,8 +43,8 @@ def login():
         password = login_form.password.data
 
         user = User.query.filter((User.username == username) | (User.email == username)).first()
-        
-        if user and check_password_hash(user.password, password) or user.password==password:  # Use hashed password check
+
+        if user and (check_password_hash(user.password, password) or user.password==password):  # Use hashed password check
             session["user_id"] = user.id  
             session["user_type"] = user.role
             flash("Login successful!", "success")
