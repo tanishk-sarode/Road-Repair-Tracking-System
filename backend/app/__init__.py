@@ -5,6 +5,7 @@ from flask_cors import CORS
 from .models import db
 from .config import Config
 
+
 def create_app():
     # Ensure correct paths for templates and static files
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -33,6 +34,7 @@ def create_app():
     from .resident_routes import resident_bp
     from .clerk_routes import clerk_bp
     from .admin_routes import admin_bp
+    from .mayor_routes import mayor_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth") # Prefix auth routes
@@ -40,4 +42,5 @@ def create_app():
     app.register_blueprint(resident_bp, url_prefix="/resident")  # Prefix resident routes
     app.register_blueprint(clerk_bp, url_prefix="/clerk")  # Prefix clerk routes
     app.register_blueprint(admin_bp, url_prefix="/admin")  # Prefix admin routes
+    app.register_blueprint(mayor_bp, url_prefix="/mayor")
     return app

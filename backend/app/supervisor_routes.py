@@ -185,6 +185,7 @@ def mark_complete(repair_id):
     repair = Repair.query.get_or_404(repair_id)
     repair.status = 'Completed'
     repair.completion_date = datetime.date.today()
+    repair.expected_completion_date = datetime.date.today()
     Complaint.query.filter_by(id=repair.complaint_id).update({"status": "Completed"})
 
     # Machines
@@ -210,4 +211,5 @@ def mark_complete(repair_id):
 
     db.session.commit()
     flash("Repair marked as completed", "success")
+    url_for('main.schedule_repairs')
     return redirect(url_for('supervisor.view_repair'))

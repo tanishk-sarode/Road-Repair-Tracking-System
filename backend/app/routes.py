@@ -33,7 +33,7 @@ def home():
     elif user_type == "clerk":
         return redirect(url_for("clerk.home_page"))
     elif user_type == "mayor":
-        return render_template('mayor.html')
+        return redirect(url_for("mayor.home_page"))
 
     flash("Invalid user type. Please contact support.", "warning")
     return redirect(url_for("auth.login"))
@@ -67,6 +67,165 @@ def repair_events():
                 "allDay": True
             })
     return jsonify(events)
+
+from flask import Blueprint, flash, redirect, url_for
+import datetime
+from .models import db, Repair, RepairMachineAllocation, RepairManpowerAllocation, RepairMaterialAllocation
+from .models import ResourceMachine, ResourceManpower, ResourceMaterial, RepairSchedule, Complaint
+
+@main_bp.route('/reschedule_repairs')
+def reschedule_repairs():
+    print("Okay")
+    today = datetime.date.today()
+    max_start_window = today + datetime.timedelta(days=45)
+
+    # Resource availability for 46 days
+    machine_avail = {m.id: [0] * 46 for m in ResourceMachine.query.all()}
+    manpower_avail = {m.id: [0] * 46 for m in ResourceManpower.query.all()}
+    material_avail = {m.id: [0] * 46 for m in ResourceMaterial.query.all()}
+
+    # Step 1: Free up resources from early completions
+    all_scheduled_repairs = Repair.query.filter(Repair.status.in_(['Scheduled', 'In Progress'])).all()
+    for repair in all_scheduled_repairs:
+        if repair.completion_date and repair.expected_completion_date and repair.completion_date < repair.expected_completion_date:
+            extra_days = (repair.expected_completion_date - repair.completion_date).days
+            start_offset = (repair.completion_date - today).days
+
+            if 0 <= start_offset < 46:
+                machine_allocs = RepairMachineAllocation.query.filter_by(repair_id=repair.id).all()
+                for alloc in machine_allocs:
+                    for d in range(start_offset, min(start_offset + extra_days, 46)):
+                        machine_avail[alloc.machine_id][d] = max(0, machine_avail[alloc.machine_id][d] - alloc.quantity_allocated)
+
+                manpower_allocs = RepairManpowerAllocation.query.filter_by(repair_id=repair.id).all()
+                for alloc in manpower_allocs:
+                    for d in range(start_offset, min(start_offset + extra_days, 46)):
+                        manpower_avail[alloc.manpower_id][d] = max(0, manpower_avail[alloc.manpower_id][d] - alloc.quantity_allocated)
+
+                material_allocs = RepairMaterialAllocation.query.filter_by(repair_id=repair.id).all()
+                for alloc in material_allocs:
+                    for d in range(start_offset, min(start_offset + extra_days, 46)):
+                        material_avail[alloc.material_id][d] = max(0, material_avail[alloc.material_id][d] - alloc.quantity_allocated)
+
+                # Update schedule and repair
+                schedule = RepairSchedule.query.filter_by(repair_id=repair.id).first()
+                if schedule:
+                    schedule.end_date = repair.completion_date
+                    db.session.add(schedule)
+                repair.expected_completion_date = repair.completion_date
+                db.session.add(repair)
+
+    db.session.commit()
+
+    # Step 2: Clear old schedules
+    repairs = Repair.query.filter(Repair.status.in_(['Scheduled', 'In Progress'])).order_by(Repair.priority.desc()).all()
+    for repair in repairs:
+        schedule = RepairSchedule.query.filter_by(repair_id=repair.id).first()
+        if schedule:
+            db.session.delete(schedule)
+        repair.start_date = None
+        repair.expected_completion_date = None
+        repair.status = 'Unscheduled'
+        db.session.add(repair)
+
+    db.session.commit()
+
+    # Step 3: Reallocate everything
+    for repair in repairs:
+        machine_allocs = RepairMachineAllocation.query.filter_by(repair_id=repair.id).all()
+        manpower_allocs = RepairManpowerAllocation.query.filter_by(repair_id=repair.id).all()
+        material_allocs = RepairMaterialAllocation.query.filter_by(repair_id=repair.id).all()
+        days_required = repair.days_to_complete
+
+        # Reset allocations
+        for alloc in machine_allocs + manpower_allocs + material_allocs:
+            alloc.quantity_allocated = 0
+            db.session.add(alloc)
+
+        scheduled = False
+        for day_offset in range(0, 46 - days_required + 1):
+            can_allocate = True
+
+            for alloc in machine_allocs:
+                for d in range(day_offset, day_offset + days_required):
+                    available = ResourceMachine.query.get(alloc.machine_id).total_available - machine_avail[alloc.machine_id][d]
+                    if available < alloc.quantity_requested:
+                        can_allocate = False
+                        break
+                if not can_allocate:
+                    break
+
+            for alloc in manpower_allocs:
+                for d in range(day_offset, day_offset + days_required):
+                    available = ResourceManpower.query.get(alloc.manpower_id).total_available - manpower_avail[alloc.manpower_id][d]
+                    if available < alloc.quantity_requested:
+                        can_allocate = False
+                        break
+                if not can_allocate:
+                    break
+
+            for alloc in material_allocs:
+                for d in range(day_offset, day_offset + days_required):
+                    available = ResourceMaterial.query.get(alloc.material_id).total_available - material_avail[alloc.material_id][d]
+                    if available < alloc.quantity_requested:
+                        can_allocate = False
+                        break
+                if not can_allocate:
+                    break
+
+            if can_allocate:
+                for alloc in machine_allocs:
+                    alloc.quantity_allocated = alloc.quantity_requested
+                    alloc.quantity_requested = 0
+                    for d in range(day_offset, day_offset + days_required):
+                        machine_avail[alloc.machine_id][d] += alloc.quantity_allocated
+                    db.session.add(alloc)
+
+                for alloc in manpower_allocs:
+                    alloc.quantity_allocated = alloc.quantity_requested
+                    alloc.quantity_requested = 0
+                    for d in range(day_offset, day_offset + days_required):
+                        manpower_avail[alloc.manpower_id][d] += alloc.quantity_allocated
+                    db.session.add(alloc)
+
+                for alloc in material_allocs:
+                    alloc.quantity_allocated = alloc.quantity_requested
+                    alloc.quantity_requested = 0
+                    for d in range(day_offset, day_offset + days_required):
+                        material_avail[alloc.material_id][d] += alloc.quantity_allocated
+                    db.session.add(alloc)
+
+                repair.start_date = today + datetime.timedelta(days=day_offset)
+                repair.expected_completion_date = repair.start_date + datetime.timedelta(days=days_required)
+
+                schedule = RepairSchedule(
+                    repair_id=repair.id,
+                    start_date=repair.start_date,
+                    end_date=repair.expected_completion_date,
+                    status='Scheduled'
+                )
+                db.session.add(schedule)
+
+                repair.status = 'In Progress' if repair.start_date == today else 'Scheduled'
+
+                complaint = Complaint.query.get(repair.complaint_id)
+                if complaint:
+                    complaint.status = repair.status
+                    db.session.add(complaint)
+
+                db.session.add(repair)
+                scheduled = True
+                break
+
+        if not scheduled:
+            repair.status = 'Unscheduled'
+            db.session.add(repair)
+
+    db.session.commit()
+    flash("Repairs have been rescheduled with early completions handled.", "info")
+    return redirect(url_for('supervisor.home_page'))
+
+
 
 @main_bp.route('/schedule_repairs')
 def schedule_repairs():

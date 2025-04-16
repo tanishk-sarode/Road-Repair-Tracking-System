@@ -63,7 +63,13 @@
     <div class="card-header bg-dark text-white">
       <h5 class="mb-0">Recent Repairs</h5>
     </div>
-    <div class="card-body">
+    <div class="card-body pb-3 mt-0">
+      <div class="d-flex justify-content-end mb-4 mt-4">
+        <a class="btn btn-success" href="{{ url_for('main.reschedule_repairs') }}">
+          Reschedule All Repairs
+        </a>
+      </div>
+
       {% if repairs %}
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
@@ -96,7 +102,4 @@
       {% endif %}
     </div>
   </div>
-</div>
-
-</div>
 {% endblock %}
