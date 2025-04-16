@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Allocate Materials{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center">Allocate Materials</h2>
+
+  <form method="POST" action="{{ url_for('admin.allocate_materials') }}">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.repair_id.label(class="form-label") }}
+      {{ form.repair_id(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.material_id.label(class="form-label") }}
+      {{ form.material_id(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.quantity.label(class="form-label") }}
+      {{ form.quantity(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Allocate Material</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

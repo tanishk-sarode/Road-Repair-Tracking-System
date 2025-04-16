@@ -24,8 +24,8 @@ def home():
         flash("Access denied. Please log in to continue.", "danger")
         return redirect(url_for("auth.login"))
 
-    if user_type == "admin":
-        return render_template('admin.html')
+    if user_type == "admin" or "admin" in user_type:
+        return redirect(url_for('admin.home_page'))
     elif user_type == "supervisor":
         return redirect(url_for('supervisor.home_page'))
     elif user_type == "resident":

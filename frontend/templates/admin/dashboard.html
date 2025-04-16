@@ -1,0 +1,102 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Admin Dashboard</h2>
+
+  <div class="row g-4">
+    <!-- Total Complaints -->
+    <div class="col-md-4">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Total Complaints</h5>
+          <p class="card-text fs-3">{{ complaints|length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Repairs -->
+    <div class="col-md-4">
+      <div class="card border-success shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success">Total Repairs</h5>
+          <p class="card-text fs-3">{{ repairs|length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Machines Available -->
+    <div class="col-md-4">
+      <div class="card border-info shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-info">Machines</h5>
+          <p class="card-text fs-3">{{ machines|length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manpower Available -->
+    <div class="col-md-6">
+      <div class="card border-warning shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-warning">Manpower</h5>
+          <p class="card-text fs-3">{{ manpower|length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Materials Available -->
+    <div class="col-md-6">
+      <div class="card border-danger shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-danger">Materials</h5>
+          <p class="card-text fs-3">{{ materials|length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+
+
+  <!-- Repairs Table -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Recent Repairs</h5>
+    </div>
+    <div class="card-body">
+      {% if repairs %}
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for repair_detail in repair_details %}
+            <tr>
+              <td>{{ repair_detail.id }}</td>
+              <td>{{ repair_detail.location }}</td>
+              <td>{{ repair_detail.status }}</td>
+              <td>{{ repair_detail.description or '—' }}</td>
+              <td>{{ repair_detail.start_date}}</td>
+              <td>{{ repair_detail.completion_date}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted">No repairs found.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}

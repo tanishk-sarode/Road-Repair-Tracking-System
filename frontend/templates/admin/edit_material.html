@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Edit Material{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Edit Material</h2>
+  <form method="POST" action="{{ url_for('admin.edit_material', id=material.id) }}">
+    {{ form.hidden_tag() }}
+    
+    <div class="mb-3">
+      {{ form.name.label(class="form-label") }}
+      {{ form.name(class="form-control", value=material.name) }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.total_available.label(class="form-label") }}
+      {{ form.total_available(class="form-control", value=material.total_available) }}
+    </div>
+
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

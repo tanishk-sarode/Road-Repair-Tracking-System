@@ -6,4 +6,4 @@ flask_cors
 flask_wtf
 gunicorn
 requests
-Faker
+flask_login

@@ -32,10 +32,12 @@ def create_app():
     from .supervisor_routes import supervisor_bp
     from .resident_routes import resident_bp
     from .clerk_routes import clerk_bp
+    from .admin_routes import admin_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth") # Prefix auth routes
     app.register_blueprint(supervisor_bp, url_prefix="/supervisor")  # Prefix supervisor routes
     app.register_blueprint(resident_bp, url_prefix="/resident")  # Prefix resident routes
     app.register_blueprint(clerk_bp, url_prefix="/clerk")  # Prefix clerk routes
+    app.register_blueprint(admin_bp, url_prefix="/admin")  # Prefix admin routes
     return app

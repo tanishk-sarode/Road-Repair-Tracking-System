@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Manpower{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center">Manage Manpower</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Manpower ID</th>
+        <th>Role</th>
+        <th>Total</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for manpower in manpower %}
+      <tr>
+        <td>{{ manpower.id }}</td>
+        <td>{{ manpower.role }}</td>
+        <td>{{ manpower.total_available }}</td>
+        <td>
+          <a href="{{ url_for('admin.edit_manpower', id=manpower.id) }}" class="btn btn-primary">Edit</a>
+          <a href="{{ url_for('admin.delete_manpower', id=manpower.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this manpower?');">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{{ url_for('admin.add_manpower') }}" class="btn btn-success">Add New Manpower</a>
+</div>
+{% endblock %}

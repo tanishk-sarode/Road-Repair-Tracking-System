@@ -130,3 +130,25 @@ class UpdateResourceForm(FlaskForm):
     total_available = IntegerField('Total Available', validators=[DataRequired()])
     currently_allocated = IntegerField('Currently Allocated', default=0)
     submit = SubmitField('Update Resource')
+
+
+
+# Admin
+class MachineForm(FlaskForm):
+    name = StringField('Machine Name', validators=[DataRequired()])
+    total_available = IntegerField('Total Available', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Save')
+
+class ManpowerForm(FlaskForm):
+    role = StringField('Role', validators=[DataRequired()])
+    total_available = IntegerField('Total Available', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Save')
+
+class MaterialForm(FlaskForm):
+    name = StringField('Material Name', validators=[DataRequired()])
+    total_available = IntegerField('Total Available', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Save')
+
+class MaterialAllocationForm(FlaskForm):
+    material_id = SelectField('Material', coerce=int, validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=1)])
