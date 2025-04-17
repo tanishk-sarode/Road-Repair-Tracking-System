@@ -7,5 +7,5 @@ app = create_app()
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
-    # app.run(debug=True, host="127.0.0.1", port=5000)  # Explicitly set host and port
+    # app.run(debug=False, host="your-ip-address", port=5000)  Host Locally
     app.run(debug=True)
