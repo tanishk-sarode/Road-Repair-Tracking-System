@@ -7,3 +7,4 @@ flask_wtf
 gunicorn
 requests
 flask_login
+gunicorn
