@@ -170,5 +170,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 
 For any questions or feedback, feel free to reach out:
-- **Email**: your-email@example.com
-- **GitHub**: [your-username](https://github.com/your-username)
+- **Email**: 122cs0803@nitrkl.ac.in
+- **GitHub**: [tanishk-sarode](https://github.com/tanishk-sarode)
+- **LinkedIn** [tanishk-sarode](https://www.linkedin.com/in/tanishk-sarode/)
