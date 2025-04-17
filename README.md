@@ -86,7 +86,7 @@ Road-Repair-Tracking-System/
 ### Steps:
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/Road-Repair-Tracking-System.git
+   git clone https://github.com/tanishk-sarode/Road-Repair-Tracking-System.git
    cd Road-Repair-Tracking-System
    ```
 
@@ -129,11 +129,24 @@ Road-Repair-Tracking-System/
 
 ## Screenshots
 
-### Resident Dashboard:
-![Resident Dashboard](path/to/screenshot1.png)
+### Mayor Dashboard:
+![Mayor Dashboard](/documents/screensorts/Mayor_dashboard.png)
 
 ### Supervisor Dashboard:
-![Supervisor Dashboard](path/to/screenshot2.png)
+![Supervisor Dashboard](/documents/screensorts/supervisor_dashboard.png)
+![Supervisor Calender](/documents/screensorts/supervisor_calender.png)
+
+### Admin Dashboard:
+![Admin Dashboard](/documents/screensorts/Admin_dashboard.png)
+
+### Clerk Dashboard:
+![Clerk Dashboard](/documents/screensorts/clerk_dashboard.png)
+
+### Resident Dashboard:
+![Resident Dashboard](/documents/screensorts/Resident_dashboard.png)
+
+
+
 
 ---
 
