@@ -167,6 +167,15 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
+## Login UserIds And Passwords
+- Residents -> resident1, resident2, resident3, resident4, resident5
+- supervisors -> supervisor1, supervisor2, supervisor3, supervisor4, supervisor5
+- Clerk -> clerk1, clerk2, clerk3, clerk4, clerk5
+- Admin -> admin1, admin2, admin3, admin4, admin5
+- Mayor -> mayor1
+-- Password(Same For All) -> 12345678
+  
+
 ## Contact
 
 For any questions or feedback, feel free to reach out:
